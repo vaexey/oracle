@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "tp4056")(type "KiCad")(uri "${KIPRJMOD}/../lib/tp4056.kicad_sym")(options "")(descr ""))
+  (lib (name "oracle")(type "KiCad")(uri "${KIPRJMOD}/../lib/oracle.kicad_sym")(options "")(descr ""))
+)
