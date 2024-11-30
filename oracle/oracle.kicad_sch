@@ -2958,6 +2958,16 @@
 	)
 	(wire
 		(pts
+			(xy 116.84 134.62) (xy 127 134.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1544b9ae-b49c-4a19-a3b9-b5d3a6726476")
+	)
+	(wire
+		(pts
 			(xy 99.06 151.13) (xy 101.6 151.13)
 		)
 		(stroke
@@ -3258,16 +3268,6 @@
 	)
 	(wire
 		(pts
-			(xy 116.84 134.62) (xy 127 134.62)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "59ab8b6d-4e4a-4785-a03c-ee910186b535")
-	)
-	(wire
-		(pts
 			(xy 116.84 66.04) (xy 127 66.04)
 		)
 		(stroke
@@ -3518,16 +3518,6 @@
 	)
 	(wire
 		(pts
-			(xy 116.84 88.9) (xy 127 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a84d1f28-756f-462c-9d2c-0fa97d979bbb")
-	)
-	(wire
-		(pts
 			(xy 240.03 77.47) (xy 245.11 77.47)
 		)
 		(stroke
@@ -3645,16 +3635,6 @@
 			(type default)
 		)
 		(uuid "cb3f868d-259b-4934-9888-e228e360e2e9")
-	)
-	(wire
-		(pts
-			(xy 54.61 148.59) (xy 58.42 148.59)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cba73e71-dd5d-4781-9b8b-96a9b54809c2")
 	)
 	(wire
 		(pts
@@ -3848,6 +3828,16 @@
 	)
 	(wire
 		(pts
+			(xy 116.84 88.9) (xy 127 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fc4e9397-2528-4b99-b95f-ff2800ada145")
+	)
+	(wire
+		(pts
 			(xy 229.87 46.99) (xy 227.33 46.99)
 		)
 		(stroke
@@ -3958,7 +3948,7 @@
 	)
 	(text "PCB LED"
 		(exclude_from_sim no)
-		(at 145.288 89.154 0)
+		(at 145.288 134.874 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3975,28 +3965,6 @@
 			)
 		)
 		(uuid "fbe6016b-936a-4501-acd0-4c0ba8878538")
-	)
-	(global_label "EXT_PF5"
-		(shape input)
-		(at 54.61 148.59 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "01945ba3-7550-4867-bc31-0b88a2bef644")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 43.763 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
 	)
 	(global_label "KP_H_5"
 		(shape input)
@@ -4702,9 +4670,9 @@
 			)
 		)
 	)
-	(global_label "EXT_PF5"
+	(global_label "BUZZER"
 		(shape input)
-		(at 127 134.62 0)
+		(at 127 88.9 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4714,7 +4682,7 @@
 		)
 		(uuid "b9bbb0b7-86e8-4e7c-8d8e-a96d8ed711cc")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 137.847 134.62 0)
+			(at 137.4237 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4946,7 +4914,7 @@
 	)
 	(global_label "LED_STATUS"
 		(shape input)
-		(at 127 88.9 0)
+		(at 127 134.62 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4956,7 +4924,7 @@
 		)
 		(uuid "e6042844-86d7-40db-8768-2abdc3654843")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 141.1732 88.9 0)
+			(at 141.1732 134.62 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6949,71 +6917,6 @@
 			(project ""
 				(path "/45530167-148b-49af-a925-e406b597863f"
 					(reference "C9")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x01_Pin")
-		(at 63.5 148.59 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c4661863-ed61-4ad1-a273-3e90cce21ada")
-		(property "Reference" "J10"
-			(at 62.865 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "EXT_PF5"
-			(at 62.865 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x01_P2.54mm_Vertical"
-			(at 63.5 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 63.5 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x01, script generated"
-			(at 63.5 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "710eb812-9820-4ac5-9547-4815c22b3c03")
-		)
-		(instances
-			(project "oracle"
-				(path "/45530167-148b-49af-a925-e406b597863f"
-					(reference "J10")
 					(unit 1)
 				)
 			)
