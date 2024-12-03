@@ -1,6 +1,10 @@
 #include "oracle.h"
 #include "macros.hpp"
 
+#define SHIFT_MEASURE_V(value) (0.00274647887f * (value))
+#define SHIFT_MEASURE_A(value) (1.0f * (value))
+#define SHIFT_MEASURE_BAT(value) (1.0f * (value))
+
 namespace nc
 {
     const size_t MAX_NC_BUFFER = 256;
@@ -13,6 +17,10 @@ namespace nc
     // std::array<event_hook, 64> event_hooks;
     event_hook event_hooks[64];
     int event_hook_count = 0;
+
+    float measured_v = -1;
+    float measured_a = -1;
+    float measured_bat = -1;
 
     void boot()
     {
@@ -29,19 +37,42 @@ namespace nc
         NC_PRINTLN(itosl(beepType));
     }
 
+    void send_measure()
+    {
+        NC_PRINTLN("M");
+    }
+
+    void set_measure_pullup(bool pullup)
+    {
+        if(pullup)
+        {
+            NC_PRINTLN("Pb");
+        } else {
+            NC_PRINTLN("Pa");
+        }
+    }   
+
     void query_events()
     {
         capture_serial();
 
         while(nc_available)
         {
+            int e_type, e_arg;
+
             switch(nc_buffer[0])
             {
                 case 'E':
-                    int e_type = sltoi(nc_buffer[1]);
-                    int e_arg = sltoi(nc_buffer[2]);
+                    e_type = sltoi(nc_buffer[1]);
+                    e_arg = sltoi(nc_buffer[2]);
 
                     emit(e_type, e_arg);
+
+                    break;
+                case 'M':
+                    measured_v = SHIFT_MEASURE_V(sltoi16(nc_buffer, 1));
+                    measured_a = SHIFT_MEASURE_A(sltoi16(nc_buffer, 5));
+                    measured_bat = SHIFT_MEASURE_BAT(sltoi16(nc_buffer, 9));
 
                     break;
             }
@@ -55,7 +86,6 @@ namespace nc
 
     void attach(event_hook hook)
     {
-        // event_hooks.push_back(hook);
         event_hooks[event_hook_count++] = hook;
     }
 

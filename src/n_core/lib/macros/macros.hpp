@@ -17,9 +17,9 @@
 // Convert higher serial letter to int (uint8_t)
 #define sltoih(chr) ( sltoi(chr) << 4 )
 // Convert int to lower serial letter
-#define itosll(uintv) ( itosl(uintv & 0b1111) )
+#define itosll(uintv) ( itosl((uintv) & 0b1111) )
 // Convert int to higher serial letter
-#define itoslh(uintv) ( itosl(uintv >> 4) )
+#define itoslh(uintv) ( itosl((uintv) >> 4) )
 
 // Extract small integer from serial letter array at index
 #define asltoi(arr, idx) ( sltoi(arr[idx]) )
@@ -30,5 +30,20 @@
 #define asltoi2(arr, idx) ( sltoih(arr[idx]) + sltoi(arr[idx + 1]) )
 // Store big integer to serial letter array at index
 #define stitosl2(arr, idx, uintv) arr[idx] = itoslh(uintv); arr[idx+1] = itosll(uintv)
+
+// 16bit encoding
+
+// Convert uint16 to serial letters 0-3
+#define itosl16_0(uintv) ( itosl((uintv) & 0b1111) )
+#define itosl16_1(uintv) ( itosl16_0((uintv) >> 4) )
+#define itosl16_2(uintv) ( itosl16_0((uintv) >> 8) )
+#define itosl16_3(uintv) ( itosl16_0((uintv) >> 12) )
+
+// Convert serial letters to uint16
+#define sltoi16(chArr, baseIdx) \
+    ( sltoi(chArr[(baseIdx) + 0]) ) + \
+    ( sltoi(chArr[(baseIdx) + 1]) << 4 ) + \
+    ( sltoi(chArr[(baseIdx) + 2]) << 8 ) + \
+    ( sltoi(chArr[(baseIdx) + 3]) << 12 )
 
 #endif

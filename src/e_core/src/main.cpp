@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <math.h>
 #include "oracle.h"
 
 void keypad(int type, int arg);
@@ -22,18 +23,38 @@ void setup() {
 
 }
 
-void loop() {
-    nc::query_events();
-}
-
 unsigned long numA = 0;
 unsigned long numB = 0;
 unsigned long result = 0;
 
 int stage = 0;
 
+void loop() {
+    nc::query_events();
+
+    if(stage == 3)
+    {
+        nc::send_measure();
+        redraw();
+
+        delay(500);
+    }
+}
+
 void redraw()
 {
+    if(stage == 3)
+    {
+        float val = roundf(0.00274647887f * 100.0f * nc::measured_bat) / 100.0f;
+
+        nc::lcd::rgb(255, 255, 255);
+        nc::lcd::setCursor(0,0);
+        nc::lcd::print(String(val));
+        nc::lcd::print("  ");
+
+        return;
+    }
+
     if(stage == 0)
     {
         nc::lcd::rgb(255, 0, 0);
@@ -100,7 +121,21 @@ void keypad(int type, int arg)
 {
     nc::beep(1);
 
-    if(stage == 2 || arg == 11)
+
+
+    if(arg == 7)
+    {
+        if(stage == 3){
+            stage = 0;
+        } else {
+            stage = 3;
+        }
+        redraw();
+        
+        return;
+    }
+
+    if(stage == 2 || arg == 11 || stage == 3)
     {
         stage = 0;
         numA = 0;

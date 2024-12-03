@@ -6,9 +6,10 @@
 namespace sense
 {
     void setup();
-    int measure_bat();
-    int measure_v();
-    int measure_a();
+    void set_pullup(bool pullup);
+    uint16_t measure_bat();
+    uint16_t measure_v();
+    uint16_t measure_a();
 
     // void measure();
 } // namespace sense

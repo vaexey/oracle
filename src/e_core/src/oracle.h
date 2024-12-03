@@ -16,8 +16,14 @@ namespace nc
         event_cb callback;
     };
 
+    extern float measured_v;
+    extern float measured_a;
+    extern float measured_bat;
+
     void boot();
     void beep(int beepType);
+    void send_measure();
+    void set_measure_pullup(bool pullup);
     void capture_serial();
     void query_events();
 

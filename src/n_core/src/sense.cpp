@@ -18,12 +18,22 @@ namespace sense
 
         pinMode(PIN_PULLUP, OUTPUT);
 
-        digitalWrite(PIN_PULLUP, HIGH);
+        set_pullup(false);
     }
 
-    int measure_multiple(uint8_t pin, uint8_t iterations)
+    void set_pullup(bool pullup)
     {
-        int total = 0; 
+        if(pullup)
+        {
+            PORTF &= ~(1 << 7);
+        } else {
+            PORTF |= (1 << 7);
+        }
+    }
+
+    uint16_t measure_multiple(uint8_t pin, uint8_t iterations)
+    {
+        uint16_t total = 0; 
 
         for(uint8_t i = 0; i < iterations; i++)
         {
@@ -33,7 +43,7 @@ namespace sense
         return total;
     }
 
-    int measure_v()
+    uint16_t measure_v()
     {
         // U - real voltage
         // Ud - voltage after voltage divider
@@ -46,20 +56,22 @@ namespace sense
         // Transpose to 1000x
         // U = A*15.267
 
-        int avg = measure_multiple(PIN_V, 10);
+        // int avg = measure_multiple(PIN_V, 10);
 
-        int mapped = 152*avg/1000;
+        // int mapped = 152*avg/1000;
 
-        return mapped;
+        return measure_multiple(PIN_V, 10);
     }
 
-    int measure_a()
+    uint16_t measure_a()
     {
         return measure_multiple(PIN_A, 10);
     }
 
-    int measure_bat()
+    uint16_t measure_bat()
     {
+        // modx 27.4647887324
+
         return measure_multiple(PIN_BAT, 10);
     }
 } // namespace sense

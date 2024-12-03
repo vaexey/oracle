@@ -3,8 +3,7 @@
 #include "interface.hpp"
 #include "event.hpp"
 #include "macros.hpp"
-
-#define ESP_SERIAL Serial1
+#include "sense.hpp"
 
 namespace esp
 {
@@ -64,6 +63,7 @@ namespace esp
         {
             interface::discard_keypad_events();
 
+            #ifndef NO_ESP
             while(esp_available)
             {
                 if(!strcmp((char*)esp_buffer, ESP_OK_MESSAGE))
@@ -82,12 +82,22 @@ namespace esp
 
                 capture_serial();
             }
+            #else                    
+            connected = true;
+            wdt_disable();
+
+            interface::set_rgb(255, 255, 255);
+            interface::lcd.clear();
+            #endif
         }
 
         // Execute serial commands
 
         while(esp_available)
         {
+            uint16_t s_v, s_a, s_bat;
+            bool pullup;
+
             switch(esp_buffer[0])
             {
                 case 'C': // Clear LCD
@@ -115,8 +125,30 @@ namespace esp
                 case 'B': // Beep
                     interface::beep(asltoi(esp_buffer, 1));
                     break;
-                // case 'M': // Measure TODO
+                case 'M': // Read values
+                    s_v = sense::measure_v();
+                    s_a = sense::measure_a();
+                    s_bat = sense::measure_bat();
 
+                    ESP_SERIAL.write('M');
+                    ESP_SERIAL.write(itosl16_0(s_v));
+                    ESP_SERIAL.write(itosl16_1(s_v));
+                    ESP_SERIAL.write(itosl16_2(s_v));
+                    ESP_SERIAL.write(itosl16_3(s_v));
+                    ESP_SERIAL.write(itosl16_0(s_a));
+                    ESP_SERIAL.write(itosl16_1(s_a));
+                    ESP_SERIAL.write(itosl16_2(s_a));
+                    ESP_SERIAL.write(itosl16_3(s_a));
+                    ESP_SERIAL.write(itosl16_0(s_bat));
+                    ESP_SERIAL.write(itosl16_1(s_bat));
+                    ESP_SERIAL.write(itosl16_2(s_bat));
+                    ESP_SERIAL.write(itosl16_3(s_bat));
+                    ESP_SERIAL.println();
+                    break;
+                case 'P': // Pullup
+                    pullup = asltoi(esp_buffer, 1) != 0;
+                    sense::set_pullup(pullup);
+                    break;
             }
 
             esp_available = false;
