@@ -16,14 +16,21 @@ namespace nc
         event_cb callback;
     };
 
+    extern bool overload_v;
     extern float measured_v;
+
+    extern bool overload_a;
     extern float measured_a;
+
+    extern float percentage_bat;
     extern float measured_bat;
+    extern bool charging_bat;
 
     void boot();
     void beep(int beepType);
     void send_measure();
     void set_measure_pullup(bool pullup);
+    float bat_to_percentage(float voltage);
     void capture_serial();
     void query_events();
 
@@ -39,6 +46,7 @@ namespace nc
         void clear();
         void setCursor(int x, int y);
         void rgb(int r, int g, int b);
+        void blink(bool blink);
 
         void print(const char* value);
         void print(char* value);

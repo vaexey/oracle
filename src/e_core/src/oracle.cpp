@@ -1,9 +1,11 @@
 #include "oracle.h"
 #include "macros.hpp"
+#include <math.h>
 
-#define SHIFT_MEASURE_V(value) (0.00274647887f * (value))
-#define SHIFT_MEASURE_A(value) (1.0f * (value))
-#define SHIFT_MEASURE_BAT(value) (1.0f * (value))
+#define SHIFT_MEASURE_V(value) (0.0015352697f * (float)(value))
+#define SHIFT_MEASURE_A(value) (0.000268125f * (float)(value))
+// #define SHIFT_MEASURE_A(value) (1.0f * (float)(value))
+#define SHIFT_MEASURE_BAT(value) (0.00274647887f * (float)(value))
 
 namespace nc
 {
@@ -18,9 +20,16 @@ namespace nc
     event_hook event_hooks[64];
     int event_hook_count = 0;
 
-    float measured_v = -1;
-    float measured_a = -1;
-    float measured_bat = -1;
+
+    bool overload_v = true;
+    float measured_v = 0;
+
+    bool overload_a = true;
+    float measured_a = 0;
+
+    float percentage_bat = 0;
+    float measured_bat = 0;
+    bool charging_bat = false;
 
     void boot()
     {
@@ -50,7 +59,26 @@ namespace nc
         } else {
             NC_PRINTLN("Pa");
         }
-    }   
+    }
+
+    float bat_to_percentage(float voltage)
+    {
+        if(voltage > 4.2f)
+        {
+            return 100.0f;
+        } else if(voltage > 3.8f)
+        {
+            return (-200.0f * voltage + 1745.0f) * voltage - 3701.0f;
+        } else if(voltage > 3.6f)
+        {
+            return (1000.0f * voltage - 7200.0f) * voltage + 12962.0f;
+        } else if(voltage > 3.5f)
+        {
+            return 20.0f * voltage - 70.0f;
+        } else {
+            return 0.0f;
+        }
+    }
 
     void query_events()
     {
@@ -58,7 +86,7 @@ namespace nc
 
         while(nc_available)
         {
-            int e_type, e_arg;
+            int e_type, e_arg, val;
 
             switch(nc_buffer[0])
             {
@@ -70,9 +98,17 @@ namespace nc
 
                     break;
                 case 'M':
-                    measured_v = SHIFT_MEASURE_V(sltoi16(nc_buffer, 1));
-                    measured_a = SHIFT_MEASURE_A(sltoi16(nc_buffer, 5));
+                    val = sltoi16(nc_buffer, 1);
+                    overload_v = (val < 0) || (val > 10240);
+                    measured_v = SHIFT_MEASURE_V(val);
+
+                    val = sltoi16(nc_buffer, 5);
+                    overload_a = (val < 0) || (val > 10240);
+                    measured_a = SHIFT_MEASURE_A(val);
+
                     measured_bat = SHIFT_MEASURE_BAT(sltoi16(nc_buffer, 9));
+                    charging_bat = measured_bat > 4.2;
+                    percentage_bat = roundf(bat_to_percentage(measured_bat) * 10.0f) / 10.0f;
 
                     break;
             }
@@ -177,6 +213,16 @@ namespace nc
             NC_PRINT("X");
             NC_PRINT(itosl(x));
             NC_PRINTLN(itosl(y));
+        }
+
+        void blink(bool blink)
+        {
+            if(blink)
+            {
+                NC_PRINTLN("Nb");
+            } else {
+                NC_PRINTLN("Na");
+            }
         }
 
         void rgb(int r, int g, int b)

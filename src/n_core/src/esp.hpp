@@ -22,7 +22,11 @@ namespace esp
     void setup();
     void loop();
 
+    void setProgrammingMode();
+
     void capture_serial();
+
+    void onProgrammingButton(bool value);
 
 } // namespace esp
 

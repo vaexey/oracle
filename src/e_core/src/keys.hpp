@@ -1,0 +1,20 @@
+#define KEY_1 0
+#define KEY_2 1
+#define KEY_3 2
+#define KEY_4 4
+#define KEY_5 5
+#define KEY_6 6
+#define KEY_7 8
+#define KEY_8 9
+#define KEY_9 10
+#define KEY_0 12
+
+#define KEY_SETTINGS 7
+#define KEY_HOME 11
+#define KEY_UP 13
+#define KEY_KEYBOARD 14
+#define KEY_BACK 15
+#define KEY_LEFT 16
+#define KEY_DOWN 17
+#define KEY_RIGHT 18
+#define KEY_ENTER 19

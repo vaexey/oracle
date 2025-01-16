@@ -18,6 +18,7 @@ namespace esp
     unsigned long enable_esp_time = 0;
     bool enabled = false;
     bool connected = false;
+    bool programming = false;
 
     // Time of reset on special press
     unsigned long reset_on = 0;
@@ -34,6 +35,37 @@ namespace esp
     void loop()
     {
         capture_serial();
+        
+        if(programming)
+        {
+            if(reset_on != 0)
+            {
+                if(millis() > reset_on)
+                {
+                    interface::set_rgb(255, 0, 0);
+                    interface::beep(4);
+                    interface::beep_roll();
+
+                    wdt_disable(); 
+                    wdt_enable(WDTO_120MS); 
+
+                    while(1);
+                }
+            }
+
+            return;
+        }
+
+        if(reset_on != 0)
+        {
+            if(millis() > reset_on)
+            {
+                setProgrammingMode();
+                reset_on = 0;
+
+                return;
+            }
+        }
 
         if(!enabled)
         {
@@ -96,7 +128,7 @@ namespace esp
         while(esp_available)
         {
             uint16_t s_v, s_a, s_bat;
-            bool pullup;
+            bool pullup, cursor;
 
             switch(esp_buffer[0])
             {
@@ -148,6 +180,20 @@ namespace esp
                 case 'P': // Pullup
                     pullup = asltoi(esp_buffer, 1) != 0;
                     sense::set_pullup(pullup);
+                    break;
+                case 'N': // Set cursor visible
+                    cursor = asltoi(esp_buffer, 1) != 0;
+                    
+                    if(cursor)
+                    {
+                        interface::lcd.blink_on();
+                        interface::lcd.cursor_on();
+                    } else {
+
+                        interface::lcd.blink_off();
+                        interface::lcd.cursor_off();
+                    }
+
                     break;
             }
 
@@ -230,6 +276,37 @@ namespace esp
                 // Discard buffer
                 esp_buffer_len = 0;
             }
+        }
+    }
+
+    void setProgrammingMode()
+    {
+        PORTC |= (1 << 7);
+
+        capture_serial();
+
+        esp_available = false;
+        esp_buffer_len = 0;
+
+        enabled = false;
+        connected = false;
+        programming = true;
+
+        interface::set_rgb(255, 0, 0);
+
+        interface::lcd.clear();
+        interface::lcd.print("  Programming   ");
+        interface::lcd.setCursor(0,1);
+        interface::lcd.print("      mode      ");
+    }
+
+    void onProgrammingButton(bool value)
+    {
+        if(value)
+        {
+            reset_on = millis() + 3000;
+        } else {
+            reset_on = 0;
         }
     }
 

@@ -3,6 +3,7 @@
 #include "interface.hpp"
 #include "event.hpp"
 #include "macros.hpp"
+#include "esp.hpp"
 
 namespace interface
 {
@@ -18,9 +19,6 @@ namespace interface
 
     // Current selected row offset
     uint8_t rowOffset = 0;
-
-    // Time of reset on special press
-    unsigned long reset_on = 0;
 
     // Counter for SoftPWM
     uint8_t pwm_counter = 0;
@@ -129,21 +127,6 @@ namespace interface
 
     void loop()
     {
-        if(reset_on != 0)
-        {
-            if(millis() > reset_on)
-            {
-                set_rgb(255, 0, 0);
-                beep(4);
-                beep_roll();
-
-                wdt_disable(); 
-                wdt_enable(WDTO_120MS); 
-
-                while(1);
-            }
-        }
-
         // keypad_roll();
 
         // pwm_r++;
@@ -321,12 +304,7 @@ namespace interface
 
                 if(rowOffset + 4 * 4 == 19) // Special reset button
                 {
-                    if(value)
-                    {
-                        reset_on = millis() + 3000;
-                    } else {
-                        reset_on = 0;
-                    }
+                    esp::onProgrammingButton(value);
                 }
             }
         }
